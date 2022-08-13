@@ -86,3 +86,38 @@ int solve(int i, int j, vector<vector<int>> &mat, vector<vector<int>> &dp)
     }
     return dp[i][j] % mod;
 }
+
+// Space Optimized
+int solve(int i, int j, vector<vector<int>> &mat)
+{
+    vector<int> prev(j + 1, 0);
+    for (int k = 0; k <= i; k++)
+    {
+        vector<int> curr(j + 1, 0);
+        for (int l = 0; l <= j; l++)
+        {
+            if (mat[k][l] == -1)
+            {
+                curr[l] = 0;
+            }
+            else if (k == 0 && l == 0)
+            {
+                curr[0] = 1;
+            }
+            else if (k == 0)
+            {
+                curr[l] = curr[l - 1] % mod;
+            }
+            else if (l == 0)
+            {
+                curr[l] = prev[l] % mod;
+            }
+            else
+            {
+                curr[l] = (prev[l] + curr[l - 1]) % mod;
+            }
+        }
+        prev = curr;
+    }
+    return prev[j];
+}
