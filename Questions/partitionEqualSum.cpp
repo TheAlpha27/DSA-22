@@ -71,3 +71,55 @@ bool solve(vector<int> &arr, int ind, int target, vector<vector<int>> &dp)
     }
     return dp[ind][target] = pick || notPick;
 }
+
+// Bottom Up Approach
+bool solve(vector<int> &arr, int ind, int target)
+{
+    vector<vector<int>> dp(ind + 1, vector<int>(target + 1, 0));
+    for (int i = 0; i <= ind; i++)
+    {
+        dp[i][0] = true;
+    }
+    dp[0][arr[0]] = true;
+    for (int i = 1; i <= ind; i++)
+    {
+        for (int j = 1; j <= target; j++)
+        {
+            bool notPick = dp[i - 1][j];
+            bool pick = false;
+            if (j >= arr[i])
+            {
+                pick = dp[i - 1][j - arr[i]];
+            }
+            dp[i][j] = pick || notPick;
+        }
+    }
+    return dp[ind][target];
+}
+
+// Space Optimised
+bool solve(vector<int> &arr, int ind, int target)
+{
+    vector<bool> prev(target + 1, 0);
+    for (int i = 0; i <= ind; i++)
+    {
+        prev[0] = true;
+    }
+    prev[arr[0]] = true;
+    for (int i = 1; i <= ind; i++)
+    {
+        vector<bool> curr(target + 1, 0);
+        for (int j = 1; j <= target; j++)
+        {
+            bool notPick = prev[j];
+            bool pick = false;
+            if (j >= arr[i])
+            {
+                pick = prev[j - arr[i]];
+            }
+            curr[j] = pick || notPick;
+        }
+        prev = curr;
+    }
+    return prev[target];
+}
